@@ -24,6 +24,7 @@ import org.gradle.api.internal.provider.LockableSetProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.language.swift.SwiftBinary;
+import org.gradle.language.swift.SwiftLanguageVersion;
 import org.gradle.language.swift.SwiftLibrary;
 import org.gradle.language.swift.SwiftPlatform;
 import org.gradle.language.swift.SwiftSharedLibrary;
@@ -57,14 +58,14 @@ public class DefaultSwiftLibrary extends DefaultSwiftComponent implements SwiftL
         getImplementationDependencies().extendsFrom(api);
     }
 
-    public SwiftStaticLibrary addStaticLibrary(String nameSuffix, boolean debuggable, boolean optimized, boolean testable, SwiftPlatform targetPlatform, NativeToolChainInternal toolChain, PlatformToolProvider platformToolProvider) {
-        SwiftStaticLibrary result = objectFactory.newInstance(DefaultSwiftStaticLibrary.class, getName() + StringUtils.capitalize(nameSuffix), getModule(), debuggable, optimized, testable, getSwiftSource(), getImplementationDependencies(), targetPlatform, toolChain, platformToolProvider);
+    public SwiftStaticLibrary addStaticLibrary(String nameSuffix, boolean debuggable, boolean optimized, boolean testable, SwiftPlatform targetPlatform, NativeToolChainInternal toolChain, PlatformToolProvider platformToolProvider, SwiftLanguageVersion swiftLanguageVersion) {
+        SwiftStaticLibrary result = objectFactory.newInstance(DefaultSwiftStaticLibrary.class, getName() + StringUtils.capitalize(nameSuffix), getModule(), debuggable, optimized, testable, getSwiftSource(), getImplementationDependencies(), targetPlatform, toolChain, platformToolProvider, swiftLanguageVersion);
         getBinaries().add(result);
         return result;
     }
 
-    public SwiftSharedLibrary addSharedLibrary(String nameSuffix, boolean debuggable, boolean optimized, boolean testable, SwiftPlatform targetPlatform, NativeToolChainInternal toolChain, PlatformToolProvider platformToolProvider) {
-        SwiftSharedLibrary result = objectFactory.newInstance(DefaultSwiftSharedLibrary.class, getName() + StringUtils.capitalize(nameSuffix), getModule(), debuggable, optimized, testable, getSwiftSource(), configurations, getImplementationDependencies(), targetPlatform, toolChain, platformToolProvider);
+    public SwiftSharedLibrary addSharedLibrary(String nameSuffix, boolean debuggable, boolean optimized, boolean testable, SwiftPlatform targetPlatform, NativeToolChainInternal toolChain, PlatformToolProvider platformToolProvider, SwiftLanguageVersion swiftLanguageVersion) {
+        SwiftSharedLibrary result = objectFactory.newInstance(DefaultSwiftSharedLibrary.class, getName() + StringUtils.capitalize(nameSuffix), getModule(), debuggable, optimized, testable, getSwiftSource(), configurations, getImplementationDependencies(), targetPlatform, toolChain, platformToolProvider, swiftLanguageVersion);
         getBinaries().add(result);
         return result;
     }

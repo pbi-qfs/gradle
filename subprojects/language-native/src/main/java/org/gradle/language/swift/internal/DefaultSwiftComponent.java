@@ -20,6 +20,7 @@ import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.internal.file.FileOperations;
+import org.gradle.api.internal.provider.LockableProperty;
 import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Property;
 import org.gradle.internal.Cast;
@@ -29,6 +30,7 @@ import org.gradle.language.nativeplatform.internal.DefaultNativeComponent;
 import org.gradle.language.nativeplatform.internal.Names;
 import org.gradle.language.swift.SwiftBinary;
 import org.gradle.language.swift.SwiftComponent;
+import org.gradle.language.swift.SwiftLanguageVersion;
 
 import java.util.Collections;
 
@@ -39,12 +41,14 @@ public abstract class DefaultSwiftComponent extends DefaultNativeComponent imple
     private final String name;
     private final Names names;
     private final Configuration implementation;
+    private final LockableProperty<SwiftLanguageVersion> swiftLanguageVersionSupport;
 
     public DefaultSwiftComponent(String name, FileOperations fileOperations, ObjectFactory objectFactory, ConfigurationContainer configurations) {
         super(fileOperations);
         this.name = name;
         swiftSource = createSourceView("src/"+ name + "/swift", Collections.singletonList("swift"));
         module = objectFactory.property(String.class);
+        swiftLanguageVersionSupport = new LockableProperty<SwiftLanguageVersion>(objectFactory.property(SwiftLanguageVersion.class));
 
         names = Names.of(name);
         implementation = configurations.create(names.withSuffix("implementation"));
@@ -81,5 +85,10 @@ public abstract class DefaultSwiftComponent extends DefaultNativeComponent imple
     @Override
     public DefaultBinaryCollection<SwiftBinary> getBinaries() {
         return binaries;
+    }
+
+    @Override
+    public LockableProperty<SwiftLanguageVersion> getSwiftLanguageVersionSupport() {
+        return swiftLanguageVersionSupport;
     }
 }

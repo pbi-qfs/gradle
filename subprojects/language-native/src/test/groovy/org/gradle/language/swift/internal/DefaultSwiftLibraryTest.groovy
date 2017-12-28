@@ -18,6 +18,7 @@ package org.gradle.language.swift.internal
 
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.internal.file.FileCollectionInternal
+import org.gradle.language.swift.SwiftLanguageVersion
 import org.gradle.language.swift.SwiftPlatform
 import org.gradle.nativeplatform.toolchain.internal.NativeToolChainInternal
 import org.gradle.nativeplatform.toolchain.internal.PlatformToolProvider
@@ -47,7 +48,7 @@ class DefaultSwiftLibraryTest extends Specification {
         def platformToolProvider = Stub(PlatformToolProvider)
 
         expect:
-        def binary = library.addStaticLibrary("debug", true, false, true, targetPlatform, toolChain, platformToolProvider)
+        def binary = library.addStaticLibrary("debug", true, false, true, targetPlatform, toolChain, platformToolProvider, SwiftLanguageVersion.SWIFT4)
         binary.name == "mainDebug"
         binary.debuggable
         !binary.optimized
@@ -55,6 +56,7 @@ class DefaultSwiftLibraryTest extends Specification {
         binary.targetPlatform == targetPlatform
         binary.toolChain == toolChain
         binary.platformToolProvider == platformToolProvider
+        binary.swiftLanguageVersion == SwiftLanguageVersion.SWIFT4
 
         library.binaries.realizeNow()
         library.binaries.get() == [binary] as Set
@@ -66,7 +68,7 @@ class DefaultSwiftLibraryTest extends Specification {
         def platformToolProvider = Stub(PlatformToolProvider)
 
         expect:
-        def binary = library.addSharedLibrary("debug", true, false, true, targetPlatform, toolChain, platformToolProvider)
+        def binary = library.addSharedLibrary("debug", true, false, true, targetPlatform, toolChain, platformToolProvider, SwiftLanguageVersion.SWIFT4)
         binary.name == "mainDebug"
         binary.debuggable
         !binary.optimized
@@ -74,6 +76,7 @@ class DefaultSwiftLibraryTest extends Specification {
         binary.targetPlatform == targetPlatform
         binary.toolChain == toolChain
         binary.platformToolProvider == platformToolProvider
+        binary.swiftLanguageVersion == SwiftLanguageVersion.SWIFT4
 
         library.binaries.realizeNow()
         library.binaries.get() == [binary] as Set

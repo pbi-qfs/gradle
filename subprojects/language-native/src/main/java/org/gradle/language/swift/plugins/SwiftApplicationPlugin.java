@@ -30,6 +30,7 @@ import org.gradle.language.internal.NativeComponentFactory;
 import org.gradle.language.nativeplatform.internal.toolchains.ToolChainSelector;
 import org.gradle.language.swift.SwiftApplication;
 import org.gradle.language.swift.SwiftExecutable;
+import org.gradle.language.swift.SwiftLanguageVersion;
 import org.gradle.language.swift.SwiftPlatform;
 import org.gradle.language.swift.internal.DefaultSwiftApplication;
 import org.gradle.language.swift.tasks.SwiftCompile;
@@ -85,9 +86,15 @@ public class SwiftApplicationPlugin implements Plugin<ProjectInternal> {
                 ObjectFactory objectFactory = project.getObjects();
 
                 ToolChainSelector.Result<SwiftPlatform> result = toolChainSelector.select(SwiftPlatform.class);
+                SwiftLanguageVersion swiftLanguageVersion = application.getSwiftLanguageVersionSupport().getOrNull();
+                if (swiftLanguageVersion == null) {
+                    swiftLanguageVersion = SwiftLanguageVersion.of(result.getPlatformToolProvider().getCompilerMetadata().getVersion());
+                    application.getSwiftLanguageVersionSupport().set(swiftLanguageVersion);
+                }
+                application.getSwiftLanguageVersionSupport().lockNow();
 
-                SwiftExecutable debugExecutable = application.addExecutable("debug", true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
-                SwiftExecutable releaseExecutable = application.addExecutable("release", true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
+                SwiftExecutable debugExecutable = application.addExecutable("debug", true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
+                SwiftExecutable releaseExecutable = application.addExecutable("release", true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
 
                 // Add outgoing APIs
                 SwiftCompile compileDebug = debugExecutable.getCompileTask().get();

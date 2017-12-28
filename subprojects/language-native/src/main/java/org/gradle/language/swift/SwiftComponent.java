@@ -69,4 +69,11 @@ public interface SwiftComponent extends ComponentWithBinaries {
      * Returns the implementation dependencies of this component.
      */
     Configuration getImplementationDependencies();
+
+    /**
+     * Returns the Swift language version supported of this component.
+     *
+     * @since 4.5
+     */
+    Property<SwiftLanguageVersion> getSwiftLanguageVersionSupport();
 }
