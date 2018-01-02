@@ -72,11 +72,11 @@ public class DefaultSwiftBinary extends DefaultNativeBinary implements SwiftBina
     private final SwiftPlatform targetPlatform;
     private final NativeToolChainInternal toolChain;
     private final PlatformToolProvider platformToolProvider;
-    private final SwiftLanguageVersion swiftLanguageVersion;
+    private final Property<SwiftLanguageVersion> swiftLanguageVersion;
     private final Configuration importPathConfiguration;
     private final Configuration implementation;
 
-    public DefaultSwiftBinary(String name, ProjectLayout projectLayout, final ObjectFactory objectFactory, Provider<String> module, boolean debuggable, boolean optimized, boolean testable, FileCollection source, ConfigurationContainer configurations, Configuration implementation, SwiftPlatform targetPlatform, NativeToolChainInternal toolChain, PlatformToolProvider platformToolProvider, SwiftLanguageVersion swiftLanguageVersion) {
+    public DefaultSwiftBinary(String name, ProjectLayout projectLayout, final ObjectFactory objectFactory, Provider<String> module, boolean debuggable, boolean optimized, boolean testable, FileCollection source, ConfigurationContainer configurations, Configuration implementation, SwiftPlatform targetPlatform, NativeToolChainInternal toolChain, PlatformToolProvider platformToolProvider) {
         super(name);
         this.module = module;
         this.debuggable = debuggable;
@@ -90,7 +90,7 @@ public class DefaultSwiftBinary extends DefaultNativeBinary implements SwiftBina
         this.toolChain = toolChain;
         this.implementation = implementation;
         this.platformToolProvider = platformToolProvider;
-        this.swiftLanguageVersion = swiftLanguageVersion;
+        this.swiftLanguageVersion = objectFactory.property(SwiftLanguageVersion.class);
 
         Names names = getNames();
 
@@ -207,7 +207,7 @@ public class DefaultSwiftBinary extends DefaultNativeBinary implements SwiftBina
     }
 
     @Override
-    public SwiftLanguageVersion getSwiftLanguageVersion() {
+    public Property<SwiftLanguageVersion> getSwiftLanguageVersion() {
         return swiftLanguageVersion;
     }
 

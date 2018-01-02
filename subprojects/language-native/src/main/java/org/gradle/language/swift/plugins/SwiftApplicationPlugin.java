@@ -26,6 +26,7 @@ import org.gradle.api.attributes.Usage;
 import org.gradle.api.internal.file.FileOperations;
 import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.api.model.ObjectFactory;
+import org.gradle.api.provider.Provider;
 import org.gradle.language.internal.NativeComponentFactory;
 import org.gradle.language.nativeplatform.internal.toolchains.ToolChainSelector;
 import org.gradle.language.swift.SwiftApplication;
@@ -37,6 +38,8 @@ import org.gradle.language.swift.tasks.SwiftCompile;
 import org.gradle.util.GUtil;
 
 import javax.inject.Inject;
+
+import java.util.concurrent.Callable;
 
 import static org.gradle.language.cpp.CppBinary.DEBUGGABLE_ATTRIBUTE;
 import static org.gradle.language.cpp.CppBinary.OPTIMIZED_ATTRIBUTE;
@@ -86,15 +89,9 @@ public class SwiftApplicationPlugin implements Plugin<ProjectInternal> {
                 ObjectFactory objectFactory = project.getObjects();
 
                 ToolChainSelector.Result<SwiftPlatform> result = toolChainSelector.select(SwiftPlatform.class);
-                SwiftLanguageVersion swiftLanguageVersion = application.getSwiftLanguageVersionSupport().getOrNull();
-                if (swiftLanguageVersion == null) {
-                    swiftLanguageVersion = SwiftLanguageVersion.of(result.getPlatformToolProvider().getCompilerMetadata().getVersion());
-                    application.getSwiftLanguageVersionSupport().set(swiftLanguageVersion);
-                }
-                application.getSwiftLanguageVersionSupport().lockNow();
 
-                SwiftExecutable debugExecutable = application.addExecutable("debug", true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
-                SwiftExecutable releaseExecutable = application.addExecutable("release", true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
+                SwiftExecutable debugExecutable = application.addExecutable("debug", true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
+                SwiftExecutable releaseExecutable = application.addExecutable("release", true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
 
                 // Add outgoing APIs
                 SwiftCompile compileDebug = debugExecutable.getCompileTask().get();

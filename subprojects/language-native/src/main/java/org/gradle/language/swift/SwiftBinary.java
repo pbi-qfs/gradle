@@ -82,5 +82,5 @@ public interface SwiftBinary extends ComponentWithObjectFiles {
      *
      * @since 4.5
      */
-    SwiftLanguageVersion getSwiftLanguageVersion();
+    Provider<SwiftLanguageVersion> getSwiftLanguageVersion();
 }

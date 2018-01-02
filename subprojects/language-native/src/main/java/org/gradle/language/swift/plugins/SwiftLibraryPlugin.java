@@ -28,7 +28,6 @@ import org.gradle.api.provider.Property;
 import org.gradle.language.internal.NativeComponentFactory;
 import org.gradle.language.nativeplatform.internal.toolchains.ToolChainSelector;
 import org.gradle.language.swift.SwiftComponent;
-import org.gradle.language.swift.SwiftLanguageVersion;
 import org.gradle.language.swift.SwiftLibrary;
 import org.gradle.language.swift.SwiftPlatform;
 import org.gradle.language.swift.SwiftSharedLibrary;
@@ -90,18 +89,12 @@ public class SwiftLibraryPlugin implements Plugin<Project> {
                 boolean staticLibs = library.getLinkage().get().contains(Linkage.STATIC);
 
                 ToolChainSelector.Result<SwiftPlatform> result = toolChainSelector.select(SwiftPlatform.class);
-                SwiftLanguageVersion swiftLanguageVersion = library.getSwiftLanguageVersionSupport().getOrNull();
-                if (swiftLanguageVersion == null) {
-                    swiftLanguageVersion = SwiftLanguageVersion.of(result.getPlatformToolProvider().getCompilerMetadata().getVersion());
-                    library.getSwiftLanguageVersionSupport().set(swiftLanguageVersion);
-                }
-                library.getSwiftLanguageVersionSupport().lockNow();
 
                 SwiftSharedLibrary debugSharedLibrary = null;
                 if (sharedLibs) {
                     String linkageNameSuffix = staticLibs ? "Shared" : "";
-                    debugSharedLibrary = library.addSharedLibrary("debug" + linkageNameSuffix, true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
-                    SwiftSharedLibrary releaseSharedLibrary = library.addSharedLibrary("release" + linkageNameSuffix, true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
+                    debugSharedLibrary = library.addSharedLibrary("debug" + linkageNameSuffix, true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
+                    SwiftSharedLibrary releaseSharedLibrary = library.addSharedLibrary("release" + linkageNameSuffix, true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
 
                     // Add publications
                     SwiftCompile compileDebug = debugSharedLibrary.getCompileTask().get();
@@ -133,8 +126,8 @@ public class SwiftLibraryPlugin implements Plugin<Project> {
                 SwiftStaticLibrary debugStaticLibrary = null;
                 if (staticLibs){
                     String linkageNameSuffix = sharedLibs ? "Static" : "";
-                    debugStaticLibrary = library.addStaticLibrary("debug" + linkageNameSuffix, true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
-                    SwiftStaticLibrary releaseStaticLibrary = library.addStaticLibrary("release" + linkageNameSuffix, true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider(), swiftLanguageVersion);
+                    debugStaticLibrary = library.addStaticLibrary("debug" + linkageNameSuffix, true, false, true, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
+                    SwiftStaticLibrary releaseStaticLibrary = library.addStaticLibrary("release" + linkageNameSuffix, true, true, false, result.getTargetPlatform(), result.getToolChain(), result.getPlatformToolProvider());
 
                     if (!sharedLibs) {
                         // Add publications
