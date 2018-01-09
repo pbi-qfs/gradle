@@ -21,4 +21,17 @@ import org.gradle.integtests.fixtures.TargetCoverage
 
 @TargetCoverage({ JavaVersion.current().isJava8Compatible() ? PlayCoverage.PLAY23_OR_LATER : PlayCoverage.PLAY23_OR_EARLIER })
 abstract class AbstractMultiVersionPlayReloadIntegrationTest extends AbstractMultiVersionPlayContinuousBuildIntegrationTest {
+    protected serverRestart() {
+        assert serverStartCount() > 1
+    }
+
+    protected serverNotRestart() {
+        if (!versionNumber.toString().startsWith("2.2")) {
+            assert serverStartCount() == 1
+        }
+    }
+
+    protected serverStartCount() {
+        gradle.standardOutput.count('play - Application started')
+    }
 }
